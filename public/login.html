@@ -162,11 +162,13 @@
         <div id="loginForm" class="form-container active">
             <div class="form-group">
                 <label>Número de Telefone</label>
-                <input type="text" id="loginTelefone" class="form-control" placeholder="(00) 00000-0000">
+                <!-- ATUALIZADO AQUI -->
+                <input type="text" id="loginTelefone" class="form-control" placeholder="(00) 00000-0000" autocomplete="off">
             </div>
             <div class="form-group">
                 <label>Senha</label>
-                <input type="password" id="loginSenha" class="form-control" placeholder="Sua senha">
+                <!-- ATUALIZADO AQUI -->
+                <input type="password" id="loginSenha" class="form-control" placeholder="Sua senha" autocomplete="new-password">
             </div>
             <button class="btn-submit" onclick="fazerLogin()">Acessar Cassino</button>
         </div>
@@ -174,15 +176,18 @@
         <div id="cadastroForm" class="form-container">
             <div class="form-group">
                 <label>Nome Completo</label>
-                <input type="text" id="cadNome" class="form-control" placeholder="Seu nome">
+                <!-- ATUALIZADO AQUI -->
+                <input type="text" id="cadNome" class="form-control" placeholder="Seu nome" autocomplete="off">
             </div>
             <div class="form-group">
                 <label>Número de Telefone</label>
-                <input type="text" id="cadTelefone" class="form-control" placeholder="(00) 00000-0000">
+                <!-- ATUALIZADO AQUI -->
+                <input type="text" id="cadTelefone" class="form-control" placeholder="(00) 00000-0000" autocomplete="off">
             </div>
             <div class="form-group">
                 <label>Criar Senha</label>
-                <input type="password" id="cadSenha" class="form-control" placeholder="Crie uma senha forte">
+                <!-- ATUALIZADO AQUI -->
+                <input type="password" id="cadSenha" class="form-control" placeholder="Crie uma senha forte" autocomplete="new-password">
             </div>
             <button class="btn-submit" onclick="fazerCadastro()">Cadastrar e Ganhar R$ 100</button>
         </div>
