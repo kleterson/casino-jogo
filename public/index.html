@@ -190,6 +190,10 @@
 </head>
 <body>
 
+    <!-- Elementos de Áudio -->
+    <audio id="som-girar" src="spin.mp3" preload="auto"></audio>
+    <audio id="som-vitoria" src="win.mp3" preload="auto"></audio>
+
     <div class="header-bar">
         <div class="user-info">
             <h2 id="nomeUsuario">Carregando...</h2>
@@ -290,6 +294,9 @@
     </div>
 
     <script>
+        const somGirar = document.getElementById('som-girar');
+        const somVitoria = document.getElementById('som-vitoria');
+
         const usuarioId = localStorage.getItem('usuarioId');
         if (!usuarioId) {
             window.location.href = 'login.html';
@@ -381,6 +388,11 @@
 
             emJogo = true;
             document.getElementById('btnGirar').disabled = true;
+            
+            // Tocar som de girar
+            somGirar.currentTime = 0;
+            somGirar.play().catch(e => console.log("Som de giro bloqueado", e));
+
             const resDiv = document.getElementById('resultado');
             resDiv.innerText = "🎰 Girando a roleta...";
             resDiv.style.color = "#38bdf8";
@@ -388,8 +400,7 @@
             saldoAtual -= apostaAtual;
             document.getElementById('saldoUsuario').innerText = `R$ ${saldoAtual.toFixed(2)}`;
 
-            // Animação de giro rápido (trocando símbolos aleatoriamente)
-            let tempoGiro = 1800; // duração do giro em milissegundos
+            let tempoGiro = 1800;
             let intervalo = setInterval(() => {
                 document.getElementById('r1_top').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
                 document.getElementById('r1_mid').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
@@ -406,8 +417,8 @@
 
             setTimeout(() => {
                 clearInterval(intervalo);
+                somGirar.pause(); // Para som de giro
 
-                // Nível equilibrado / um pouco acima da média (aprox. 45% a 50% de chance de vitória na linha central)
                 const f1_top = simbolos[Math.floor(Math.random() * simbolos.length)];
                 const f1_bot = simbolos[Math.floor(Math.random() * simbolos.length)];
                 
@@ -444,7 +455,6 @@
                 document.getElementById('r3_mid').innerText = f3_mid;
                 document.getElementById('r3_bot').innerText = f3_bot;
 
-                // Verifica se ganhou na linha do meio (3 símbolos iguais)
                 const ganhou = (f1_mid === f2_mid && f2_mid === f3_mid);
                 let novoSaldo = saldoAtual;
 
@@ -454,6 +464,10 @@
                     resDiv.innerHTML = `🎉 PARABÉNS! Você ganhou <strong style="color:#4ade80;">R$ ${premio.toFixed(2)}</strong>!`;
                     resDiv.style.color = "#4ade80";
                     confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                    
+                    // Tocar som de vitória
+                    somVitoria.currentTime = 0;
+                    somVitoria.play().catch(e => console.log("Som de vitória bloqueado", e));
                 } else {
                     resDiv.innerHTML = `❌ Não foi dessa vez! Você perdeu R$ ${apostaAtual.toFixed(2)}`;
                     resDiv.style.color = "#f43f5e";
@@ -462,7 +476,6 @@
                 saldoAtual = novoSaldo;
                 document.getElementById('saldoUsuario').innerText = `R$ ${saldoAtual.toFixed(2)}`;
 
-                // Envia o novo saldo para o servidor
                 fetch('/api/jogar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
