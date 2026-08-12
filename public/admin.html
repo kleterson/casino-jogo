@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Cassino Royale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #020617; font-family: 'Urbanist', sans-serif; color: #fff; padding: 30px; }
+        h1 { font-family: 'Playfair Display', serif; color: #facc15; margin-bottom: 25px; font-size: 26px; }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: #0f172a;
+            border-radius: 16px;
+            border: 1px solid rgba(250, 204, 21, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 15px; border-bottom: 1px solid #1e293b; font-size: 13px; }
+        th { background: #1e293b; color: #facc15; font-weight: 700; text-transform: uppercase; font-size: 11px; }
+
+        .btn-liberar {
+            background: #10b981; color: #fff; border: none; padding: 6px 12px;
+            border-radius: 6px; font-weight: 700; cursor: pointer; margin-right: 5px;
+        }
+        .btn-liberar:hover { background: #059669; }
+
+        .btn-rejeitar {
+            background: #ef4444; color: #fff; border: none; padding: 6px 12px;
+            border-radius: 6px; font-weight: 700; cursor: pointer;
+        }
+        .btn-rejeitar:hover { background: #dc2626; }
+
+        .input-credito {
+            width: 105px;
+            padding: 6px;
+            background: #020617;
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            border-radius: 6px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            margin-right: 5px;
+        }
+        /* Remove as setinhas de rolar para cima e para baixo do input number */
+        .input-credito::-webkit-outer-spin-button,
+        .input-credito::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-credito {
+            -moz-appearance: textfield;
+        }
+
+        .btn-adicionar {
+            background: #3b82f6; color: #fff; border: none; padding: 6px 10px;
+            border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 11px;
+        }
+        .btn-adicionar:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>Painel do Administrador - Usuários e Créditos 🛡️</h1>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Senha</th>
+                    <th>Saldo Atual</th>
+                    <th>Adicionar Crédito Manual</th>
+                    <th>Valor Pendente (Pix)</th>
+                    <th>Dados do Saque Solicitado</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-usuarios">
+                <tr>
+                    <td colspan="9" style="text-align: center; color: #94a3b8;">Carregando dados...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function carregarUsuarios() {
+            fetch('/api/admin/usuarios')
+                .then(res => res.json())
+                .then(usuarios => {
+                    const tbody = document.getElementById('tabela-usuarios');
+                    tbody.innerHTML = '';
+
+                    usuarios.forEach(user => {
+                        let tr = document.createElement('tr');
+                        
+                        let dadosSaqueHtml = '<span style="color: #64748b;">Nenhum saque</span>';
+                        if (user.saqueSolicitado) {
+                            dadosSaqueHtml = `
+                                <div style="background: #020617; padding: 8px; border-radius: 6px; border: 1px solid rgba(250,204,21,0.3); font-size: 12px;">
+                                    <strong style="color: #facc15;">Saque: R$ ${user.saqueSolicitado.valor.toFixed(2)}</strong><br>
+                                    <strong>Nome:</strong> ${user.saqueSolicitado.nomeCompleto}<br>
+                                    <strong>Chave Pix:</strong> <span style="color: #38bdf8;">${user.saqueSolicitado.chavePix}</span><br>
+                                    <strong>CPF:</strong> ${user.saqueSolicitado.cpf}<br>
+                                    <strong>Contato:</strong> ${user.saqueSolicitado.contato}
+                                </div>
+                            `;
+                        }
+
+                        let acaoHtml = '<span style="color: #64748b;">Nenhuma</span>';
+                        if (user.depositoPendente > 0) {
+                            acaoHtml = `
+                                <button class="btn-liberar" onclick="liberarBonus(${user.id})">Aprovar</button>
+                                <button class="btn-rejeitar" onclick="rejeitarDeposito(${user.id})">Rejeitar</button>
+                            `;
+                        }
+
+                        tr.innerHTML = `
+                            <td>#${user.id}</td>
+                            <td style="font-weight: 700;">${user.nome}</td>
+                            <td>${user.telefone}</td>
+                            <td><code style="background:#020617; padding:3px 6px; border-radius:4px; color:#facc15;">${user.senha}</code></td>
+                            <td style="color: #4ade80; font-weight: 800;">R$ ${user.saldo.toFixed(2)}</td>
+                            <td>
+                                <input type="number" id="input_val_${user.id}" class="input-credito" step="any" placeholder="Valor" value="100">
+                                <button class="btn-adicionar" onclick="adicionarCredito(${user.id})">Dar</button>
+                            </td>
+                            <td style="color: ${user.depositoPendente > 0 ? '#facc15' : '#fff'}; font-weight: bold;">R$ ${user.depositoPendente.toFixed(2)}</td>
+                            <td>${dadosSaqueHtml}</td>
+                            <td>${acaoHtml}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                })
+                .catch(err => console.error("Erro ao carregar usuários:", err));
+        }
+
+        function adicionarCredito(usuarioId) {
+            const valorInput = document.getElementById(`input_val_${usuarioId}`).value;
+            const valor = parseFloat(valorInput);
+
+            if (isNaN(valor) || valor <= 0) {
+                alert("Digite um valor válido para adicionar!");
+                return;
+            }
+
+            fetch('/api/admin/adicionar-credito', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuarioId, valor })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.mensagem);
+                carregarUsuarios();
+            })
+            .catch(err => console.error("Erro ao adicionar crédito:", err));
+        }
+
+        function liberarBonus(usuarioId) {
+            fetch('/api/admin/liberar-bonus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuarioId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.mensagem);
+                carregarUsuarios();
+            })
+            .catch(err => console.error("Erro ao liberar bônus:", err));
+        }
+
+        function rejeitarDeposito(usuarioId) {
+            if(confirm("Tem certeza que deseja rejeitar esta solicitação?")) {
+                fetch('/api/admin/rejeitar-deposito', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuarioId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.mensagem);
+                    carregarUsuarios();
+                })
+                .catch(err => console.error("Erro ao rejeitar depósito:", err));
+            }
+        }
+
+        setInterval(carregarUsuarios, 3000);
+        carregarUsuarios();
+    </script>
+</body>
+</html>

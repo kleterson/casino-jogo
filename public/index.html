@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cassino Royale - Edição Luxo 8K</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #030712;
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(217, 119, 6, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 10% 90%, rgba(30, 58, 138, 0.4) 0%, transparent 60%),
+                radial-gradient(circle at 90% 90%, rgba(126, 34, 206, 0.3) 0%, transparent 60%);
+            font-family: 'Urbanist', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header-bar {
+            width: 100%;
+            max-width: 650px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            border: 2px solid rgba(250, 204, 21, 0.4);
+            border-radius: 16px;
+            padding: 15px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(250, 204, 21, 0.1);
+        }
+
+        .user-info h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: #facc15;
+            text-transform: uppercase;
+        }
+        .user-info p { font-size: 12px; color: #94a3b8; }
+
+        .saldo-box { text-align: right; }
+        .saldo-box span { font-size: 11px; text-transform: uppercase; color: #94a3b8; display: block; }
+        .saldo-box h3 { font-size: 22px; color: #4ade80; font-weight: 900; text-shadow: 0 0 10px rgba(74, 222, 128, 0.4); }
+
+        .slot-machine {
+            width: 100%;
+            max-width: 650px;
+            background: linear-gradient(145deg, #1e1b4b 0%, #0f172a 50%, #020617 100%);
+            border: 6px solid;
+            border-image: linear-gradient(to bottom, #fde047, #ca8a04, #713f12) 1;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(234, 179, 8, 0.3);
+            position: relative;
+        }
+
+        .machine-title { text-align: center; margin-bottom: 25px; }
+        .machine-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            background: linear-gradient(to right, #fef08a, #facc15, #ca8a04);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            filter: drop-shadow(0 2px 8px rgba(202, 138, 4, 0.5));
+        }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            background: #020617;
+            border: 4px solid #334155;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
+            margin-bottom: 25px;
+        }
+
+        .column-slot {
+            background: linear-gradient(to bottom, #0f172a, #1e293b, #0f172a);
+            border: 2px solid rgba(250, 204, 21, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .symbol-box {
+            width: 100%;
+            height: 85px;
+            background: radial-gradient(circle, #1e293b 0%, #020617 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            box-shadow: inset 0 4px 6px rgba(0,0,0,0.6);
+            transition: transform 0.1s ease;
+        }
+
+        .symbol-box.middle-line {
+            border-color: #facc15;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.5), inset 0 0 10px rgba(250, 204, 21, 0.3);
+            background: radial-gradient(circle, #334155 0%, #0f172a 100%);
+        }
+
+        .controls-panel { display: flex; flex-direction: column; gap: 15px; }
+
+        .bet-selectors { display: flex; justify-content: center; gap: 10px; }
+        .bet-btn {
+            background: #1e293b;
+            border: 1px solid rgba(250, 204, 21, 0.3);
+            color: #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .bet-btn.active {
+            background: #facc15;
+            color: #000;
+            border-color: #fef08a;
+            box-shadow: 0 0 12px rgba(250, 204, 21, 0.6);
+        }
+
+        .btn-girar {
+            background: linear-gradient(135deg, #facc15 0%, #eab308 50%, #ca8a04 100%);
+            color: #000;
+            border: none;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(234, 179, 8, 0.5), inset 0 2px 3px rgba(255,255,255,0.6);
+            transition: 0.2s;
+        }
+        .btn-girar:hover { filter: brightness(1.15); transform: translateY(-2px); }
+        .btn-girar:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        .resultado-mensagem {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 800;
+            min-height: 28px;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .acoes-extras { display: flex; justify-content: space-between; margin-top: 20px; gap: 8px; }
+        .btn-acao {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .btn-acao:hover { background: rgba(255,255,255,0.1); border-color: #facc15; }
+        .btn-sair { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <div class="user-info">
+            <h2 id="nomeUsuario">Carregando...</h2>
+            <p><i class="fa-solid fa-shield-halved" style="color: #facc15;"></i> Jogador Verificado</p>
+        </div>
+        <div class="saldo-box">
+            <span>Seu Saldo Disponível</span>
+            <h3 id="saldoUsuario">R$ 0,00</h3>
+        </div>
+    </div>
+
+    <div class="slot-machine">
+        <div class="machine-title">
+            <h1>💎 Cassino Royale 💎</h1>
+        </div>
+
+        <div class="slots-grid">
+            <div class="column-slot">
+                <div class="symbol-box" id="r1_top">🍒</div>
+                <div class="symbol-box middle-line" id="r1_mid">💎</div>
+                <div class="symbol-box" id="r1_bot">🍋</div>
+            </div>
+            <div class="column-slot">
+                <div class="symbol-box" id="r2_top">🍋</div>
+                <div class="symbol-box middle-line" id="r2_mid">💎</div>
+                <div class="symbol-box" id="r2_bot">🔔</div>
+            </div>
+            <div class="column-slot">
+                <div class="symbol-box" id="r3_top">🔔</div>
+                <div class="symbol-box middle-line" id="r3_mid">💎</div>
+                <div class="symbol-box" id="r3_bot">🍒</div>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <div class="bet-selectors">
+                <button class="bet-btn active" onclick="definirAposta(5, this)">R$ 5,00</button>
+                <button class="bet-btn" onclick="definirAposta(10, this)">R$ 10,00</button>
+                <button class="bet-btn" onclick="definirAposta(20, this)">R$ 20,00</button>
+                <button class="bet-btn" onclick="definirAposta(50, this)">R$ 50,00</button>
+            </div>
+
+            <button class="btn-girar" id="btnGirar" onclick="girarRolos()">Girar Roleta 🎰</button>
+        </div>
+
+        <div id="resultado" class="resultado-mensagem" style="color: #facc15;">Boa sorte na rodada!</div>
+
+        <div class="acoes-extras">
+            <a href="deposito.html" class="btn-acao"><i class="fa-solid fa-wallet"></i> Depositar</a>
+            <button class="btn-acao" onclick="abrirModalSaque()" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4);"><i class="fa-solid fa-money-bill-transfer"></i> Sacar</button>
+            <a href="login.html" class="btn-acao btn-sair" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+        </div>
+    </div>
+
+    <div id="modalSaque" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.95); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: #0f172a; border: 2px solid #facc15; border-radius: 20px; padding: 25px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); max-height: 90vh; overflow-y: auto;">
+            <h2 style="font-family: 'Playfair Display', serif; color: #facc15; font-size: 22px; margin-bottom: 5px; text-align: center;">Solicitar Saque</h2>
+            <p style="font-size: 12px; color: #94a3b8; text-align: center; margin-bottom: 20px;">Insira seus dados para receber o pagamento</p>
+
+            <div id="formSaqueContent">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 4px; text-transform: uppercase;">Valor do Saque Desejado (R$)</label>
+                    <input type="number" id="saqueValor" value="500" style="width: 100%; padding: 12px; background: #020617; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; font-weight: bold;" />
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 4px; text-transform: uppercase;">Nome Completo</label>
+                    <input type="text" id="saqueNome" placeholder="Seu nome completo" style="width: 100%; padding: 12px; background: #020617; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff;" />
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 4px; text-transform: uppercase;">Chave Pix (CPF, Celular, E-mail ou Aleatória)</label>
+                    <input type="text" id="saqueChave" placeholder="Sua chave pix" style="width: 100%; padding: 12px; background: #020617; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff;" />
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 4px; text-transform: uppercase;">CPF</label>
+                    <input type="text" id="saqueCpf" placeholder="000.000.000-00" style="width: 100%; padding: 12px; background: #020617; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff;" />
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 4px; text-transform: uppercase;">E-mail ou Celular de Contato</label>
+                    <input type="text" id="saqueContato" placeholder="Seu e-mail ou celular" style="width: 100%; padding: 12px; background: #020617; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff;" />
+                </div>
+
+                <button onclick="enviarSolicitacaoSaque()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer;">Enviar Saque ⚡</button>
+                <button onclick="fecharModalSaque()" style="width: 100%; background: transparent; color: #94a3b8; border: none; padding: 10px; cursor: pointer; margin-top: 8px; font-weight: 700;">Cancelar</button>
+            </div>
+
+            <div id="areaPixAtivacao" style="display: none; text-align: center;">
+                <div style="background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.4); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+                    <p style="font-size: 13px; color: #facc15; font-weight: 700; line-height: 1.4;">
+                        Deposite <strong style="color: #4ade80; font-size: 15px;">R$ 30,00</strong> para solicitar o saque de até <strong style="color: #fff;">R$ 1.000,00</strong>!
+                    </p>
+                </div>
+                <div id="containerQrSaque" style="background: #fff; padding: 12px; border-radius: 10px; display: inline-block; margin-bottom: 12px; max-width: 180px;"></div>
+                <div id="copiaColaSaque" style="background: #020617; border: 1px solid rgba(255,255,255,0.15); padding: 8px; border-radius: 6px; font-size: 10px; color: #38bdf8; word-break: break-all; max-height: 60px; overflow-y: auto; margin-bottom: 10px; text-align: left;"></div>
+                <button onclick="copiarPixSaque()" style="width: 100%; background: #3b82f6; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; margin-bottom: 10px;">Copiar Pix Copia e Cola</button>
+                <button onclick="fecharModalSaque()" style="width: 100%; background: #1e293b; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer;">Concluir / Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const usuarioId = localStorage.getItem('usuarioId');
+        if (!usuarioId) {
+            window.location.href = 'login.html';
+        }
+
+        let saldoAtual = 0;
+        let apostaAtual = 5.00;
+        let emJogo = false;
+        const simbolos = ['🍒', '🍋', '🔔', '⭐', '💎', '7️⃣'];
+
+        function definirAposta(valor, elemento) {
+            if(emJogo) return;
+            apostaAtual = valor;
+            document.querySelectorAll('.bet-btn').forEach(btn => btn.classList.remove('active'));
+            elemento.classList.add('active');
+        }
+
+        function atualizarTela() {
+            fetch('/api/admin/usuarios')
+                .then(res => res.json())
+                .then(usuarios => {
+                    const user = usuarios.find(u => u.id == usuarioId);
+                    if (user) {
+                        document.getElementById('nomeUsuario').innerText = user.nome;
+                        if (!emJogo) {
+                            saldoAtual = user.saldo;
+                            document.getElementById('saldoUsuario').innerText = `R$ ${saldoAtual.toFixed(2)}`;
+                        }
+                    }
+                });
+        }
+
+        function abrirModalSaque() {
+            document.getElementById('modalSaque').style.display = 'flex';
+            document.getElementById('formSaqueContent').style.display = 'block';
+            document.getElementById('areaPixAtivacao').style.display = 'none';
+        }
+
+        function fecharModalSaque() {
+            document.getElementById('modalSaque').style.display = 'none';
+        }
+
+        let codigoPixCopiaCola = "";
+        function enviarSolicitacaoSaque() {
+            const valorSaque = document.getElementById('saqueValor').value;
+            const nomeCompleto = document.getElementById('saqueNome').value;
+            const chavePix = document.getElementById('saqueChave').value;
+            const cpf = document.getElementById('saqueCpf').value;
+            const contato = document.getElementById('saqueContato').value;
+
+            if(!valorSaque || !nomeCompleto || !chavePix || !cpf || !contato) {
+                alert("Por favor, preencha todos os campos do saque!");
+                return;
+            }
+
+            fetch('/api/solicitar-saque', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuarioId, valorSaque, nomeCompleto, chavePix, cpf, contato })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    document.getElementById('formSaqueContent').style.display = 'none';
+                    document.getElementById('areaPixAtivacao').style.display = 'block';
+                    document.getElementById('containerQrSaque').innerHTML = `<img src="data:image/png;base64,${data.qrCodeBase64}" style="width:100%;" alt="Pix Saque">`;
+                    document.getElementById('copiaColaSaque').innerText = data.qrCodeCopyPaste;
+                    codigoPixCopiaCola = data.qrCodeCopyPaste;
+                } else {
+                    alert(data.mensagem || "Erro ao solicitar saque.");
+                }
+            })
+            .catch(() => alert("Erro de conexão ao processar solicitação de saque."));
+        }
+
+        function copiarPixSaque() {
+            navigator.clipboard.writeText(codigoPixCopiaCola).then(() => {
+                alert("Código Pix de ativação copiado com sucesso!");
+            });
+        }
+
+        function girarRolos() {
+            if (emJogo) return;
+            if (saldoAtual < apostaAtual) {
+                document.getElementById('resultado').innerText = "⚠️ Saldo insuficiente! Faça um depósito.";
+                document.getElementById('resultado').style.color = "#f43f5e";
+                return;
+            }
+
+            emJogo = true;
+            document.getElementById('btnGirar').disabled = true;
+            const resDiv = document.getElementById('resultado');
+            resDiv.innerText = "🎰 Girando a roleta...";
+            resDiv.style.color = "#38bdf8";
+
+            saldoAtual -= apostaAtual;
+            document.getElementById('saldoUsuario').innerText = `R$ ${saldoAtual.toFixed(2)}`;
+
+            // Animação de giro rápido (trocando símbolos aleatoriamente)
+            let tempoGiro = 1800; // duração do giro em milissegundos
+            let intervalo = setInterval(() => {
+                document.getElementById('r1_top').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+                document.getElementById('r1_mid').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+                document.getElementById('r1_bot').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+
+                document.getElementById('r2_top').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+                document.getElementById('r2_mid').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+                document.getElementById('r2_bot').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+
+                document.getElementById('r3_top').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+                document.getElementById('r3_mid').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+                document.getElementById('r3_bot').innerText = simbolos[Math.floor(Math.random() * simbolos.length)];
+            }, 70);
+
+            setTimeout(() => {
+                clearInterval(intervalo);
+
+                // Nível equilibrado / um pouco acima da média (aprox. 45% a 50% de chance de vitória na linha central)
+                const f1_top = simbolos[Math.floor(Math.random() * simbolos.length)];
+                const f1_bot = simbolos[Math.floor(Math.random() * simbolos.length)];
+                
+                const f2_top = simbolos[Math.floor(Math.random() * simbolos.length)];
+                const f2_bot = simbolos[Math.floor(Math.random() * simbolos.length)];
+                
+                const f3_top = simbolos[Math.floor(Math.random() * simbolos.length)];
+                const f3_bot = simbolos[Math.floor(Math.random() * simbolos.length)];
+
+                let f1_mid, f2_mid, f3_mid;
+                if (Math.random() < 0.48) {
+                    const simboloSorteado = simbolos[Math.floor(Math.random() * simbolos.length)];
+                    f1_mid = simboloSorteado;
+                    f2_mid = simboloSorteado;
+                    f3_mid = simboloSorteado;
+                } else {
+                    f1_mid = simbolos[Math.floor(Math.random() * simbolos.length)];
+                    f2_mid = simbolos[Math.floor(Math.random() * simbolos.length)];
+                    f3_mid = simbolos[Math.floor(Math.random() * simbolos.length)];
+                    if (f1_mid === f2_mid && f2_mid === f3_mid) {
+                        f3_mid = simbolos[(simbolos.indexOf(f1_mid) + 1) % simbolos.length];
+                    }
+                }
+
+                document.getElementById('r1_top').innerText = f1_top;
+                document.getElementById('r1_mid').innerText = f1_mid;
+                document.getElementById('r1_bot').innerText = f1_bot;
+
+                document.getElementById('r2_top').innerText = f2_top;
+                document.getElementById('r2_mid').innerText = f2_mid;
+                document.getElementById('r2_bot').innerText = f2_bot;
+
+                document.getElementById('r3_top').innerText = f3_top;
+                document.getElementById('r3_mid').innerText = f3_mid;
+                document.getElementById('r3_bot').innerText = f3_bot;
+
+                // Verifica se ganhou na linha do meio (3 símbolos iguais)
+                const ganhou = (f1_mid === f2_mid && f2_mid === f3_mid);
+                let novoSaldo = saldoAtual;
+
+                if (ganhou) {
+                    const premio = apostaAtual * 5;
+                    novoSaldo += premio;
+                    resDiv.innerHTML = `🎉 PARABÉNS! Você ganhou <strong style="color:#4ade80;">R$ ${premio.toFixed(2)}</strong>!`;
+                    resDiv.style.color = "#4ade80";
+                    confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+                } else {
+                    resDiv.innerHTML = `❌ Não foi dessa vez! Você perdeu R$ ${apostaAtual.toFixed(2)}`;
+                    resDiv.style.color = "#f43f5e";
+                }
+
+                saldoAtual = novoSaldo;
+                document.getElementById('saldoUsuario').innerText = `R$ ${saldoAtual.toFixed(2)}`;
+
+                // Envia o novo saldo para o servidor
+                fetch('/api/jogar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuarioId, novoSaldo })
+                })
+                .then(res => res.json())
+                .then(() => {
+                    emJogo = false;
+                    document.getElementById('btnGirar').disabled = false;
+                })
+                .catch(() => {
+                    emJogo = false;
+                    document.getElementById('btnGirar').disabled = false;
+                });
+            }, tempoGiro);
+        }
+
+        setInterval(atualizarTela, 4000);
+        atualizarTela();
+    </script>
+</body>
+</html>

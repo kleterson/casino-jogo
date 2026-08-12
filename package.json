@@ -1,0 +1,12 @@
+{
+  "name": "cassino-jogo",
+  "version": "1.0.0",
+  "description": "Plataforma de roleta com painel admin",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.2"
+  }
+}

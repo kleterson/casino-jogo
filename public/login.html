@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - Cassino Royale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(234, 179, 8, 0.18) 0%, transparent 40%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Urbanist', sans-serif;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(250, 204, 21, 0.2);
+            border: 2px solid rgba(250, 204, 21, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Banner Promocional Profissional */
+        .promo-banner {
+            background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #f59e0b 100%);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+            border: 1px solid #fef08a;
+            position: relative;
+            animation: pulseGlow 2s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
+            100% { box-shadow: 0 0 25px rgba(250, 204, 21, 0.8); }
+        }
+
+        .promo-banner .happy-face {
+            font-size: 32px;
+            display: inline-block;
+            margin-bottom: 4px;
+            animation: bounceFace 1s infinite alternate;
+        }
+        @keyframes bounceFace {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-5px) scale(1.1); }
+        }
+
+        .promo-banner h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+        .promo-banner p {
+            font-size: 13px;
+            color: #fffbeb;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .logo-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-title h1 {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(to right, #facc15, #f59e0b, #fef08a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .logo-title p { color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+        .tabs {
+            display: flex;
+            background: #020617;
+            border-radius: 30px;
+            padding: 4px;
+            margin-bottom: 22px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .tab-btn {
+            flex: 1; padding: 10px; border-radius: 25px; border: none;
+            background: transparent; color: #64748b; font-weight: 700; font-size: 12px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn.active {
+            background: #facc15; color: #000; box-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; }
+        .form-control {
+            width: 100%; padding: 12px 15px; background: #020617; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px; color: #fff; font-size: 14px; font-family: 'Urbanist', sans-serif;
+            transition: 0.2s;
+        }
+        .form-control:focus { outline: none; border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.2); }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+            color: #000; border: none; padding: 14px; width: 100%; border-radius: 10px;
+            font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; margin-top: 10px; box-shadow: 0 5px 20px rgba(234, 179, 8, 0.4);
+            transition: 0.2s;
+        }
+        .btn-submit:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+        .form-container { display: none; }
+        .form-container.active { display: block; }
+
+        .msg-feedback {
+            margin-top: 15px; text-align: center; font-size: 13px; font-weight: 700; min-height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="promo-banner">
+            <div class="happy-face">😊🎉</div>
+            <h3>Primeiro Cadastro Ganha</h3>
+            <p>R$ 100,00 DE BÔNUS NA HORA!</p>
+        </div>
+
+        <div class="logo-title">
+            <h1>Cassino Royale</h1>
+            <p>Portal Oficial de Jogos</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tabLoginBtn" onclick="trocarAba('login')">Entrar</button>
+            <button class="tab-btn" id="tabCadastroBtn" onclick="trocarAba('cadastro')">Criar Conta</button>
+        </div>
+
+        <div id="loginForm" class="form-container active">
+            <div class="form-group">
+                <label>Número de Telefone</label>
+                <input type="text" id="loginTelefone" class="form-control" placeholder="(00) 00000-0000">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="loginSenha" class="form-control" placeholder="Sua senha">
+            </div>
+            <button class="btn-submit" onclick="fazerLogin()">Acessar Cassino</button>
+        </div>
+
+        <div id="cadastroForm" class="form-container">
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" id="cadNome" class="form-control" placeholder="Seu nome">
+            </div>
+            <div class="form-group">
+                <label>Número de Telefone</label>
+                <input type="text" id="cadTelefone" class="form-control" placeholder="(00) 00000-0000">
+            </div>
+            <div class="form-group">
+                <label>Criar Senha</label>
+                <input type="password" id="cadSenha" class="form-control" placeholder="Crie uma senha forte">
+            </div>
+            <button class="btn-submit" onclick="fazerCadastro()">Cadastrar e Ganhar R$ 100</button>
+        </div>
+
+        <div id="feedbackMsg" class="msg-feedback"></div>
+    </div>
+
+    <script>
+        // Dispara confetes de festa logo ao abrir a tela de login
+        window.onload = () => {
+            dispararEfeitosFesta();
+        };
+
+        function dispararEfeitosFesta() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function trocarAba(aba) {
+            if(aba === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('cadastroForm').classList.remove('active');
+                document.getElementById('tabLoginBtn').classList.add('active');
+                document.getElementById('tabCadastroBtn').classList.remove('active');
+            } else {
+                document.getElementById('cadastroForm').classList.add('active');
+                document.getElementById('loginForm').classList.remove('active');
+                document.getElementById('tabCadastroBtn').classList.add('active');
+                document.getElementById('tabLoginBtn').classList.remove('active');
+            }
+            document.getElementById('feedbackMsg').innerText = '';
+        }
+
+        function fazerLogin() {
+            const telefone = document.getElementById('loginTelefone').value;
+            const senha = document.getElementById('loginSenha').value;
+            const msg = document.getElementById('feedbackMsg');
+
+            if(!telefone || !senha) {
+                msg.style.color = '#f43f5e';
+                msg.innerText = "Preencha todos os campos!";
+                return;
+            }
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telefone, senha })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    localStorage.setItem('usuarioId', data.usuarioId);
+                    window.location.href = 'index.html';
+                } else {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = data.mensagem;
+                }
+            })
+            .catch(() => {
+                msg.style.color = '#f43f5e';
+                msg.innerText = "Erro de conexão com o servidor.";
+            });
+        }
+
+        function fazerCadastro() {
+            const nome = document.getElementById('cadNome').value;
+            const telefone = document.getElementById('cadTelefone').value;
+            const senha = document.getElementById('cadSenha').value;
+            const msg = document.getElementById('feedbackMsg');
+
+            if(!nome || !telefone || !senha) {
+                msg.style.color = '#f43f5e';
+                msg.innerText = "Preencha todos os campos para garantir seu bônus!";
+                return;
+            }
+
+            fetch('/api/cadastrar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, telefone, senha })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    dispararEfeitosFesta();
+                    msg.style.color = '#4ade80';
+                    msg.innerText = "🎉 " + data.mensagem;
+                    setTimeout(() => {
+                        localStorage.setItem('usuarioId', data.usuario.id);
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    msg.style.color = '#f43f5e';
+                    msg.innerText = data.mensagem;
+                }
+            })
+            .catch(() => {
+                msg.style.color = '#f43f5e';
+                msg.innerText = "Erro ao processar cadastro.";
+            });
+        }
+    </script>
+</body>
+</html>

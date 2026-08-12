@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depósito via Pix - Cassino Royale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #020617;
+            background-image: radial-gradient(circle at 50% 20%, rgba(217, 119, 6, 0.2) 0%, transparent 50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Urbanist', sans-serif;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .deposito-container {
+            width: 100%;
+            max-width: 440px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(250, 204, 21, 0.2);
+            border: 2px solid rgba(250, 204, 21, 0.4);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #facc15;
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+        p.sub { font-size: 13px; color: #94a3b8; margin-bottom: 25px; }
+
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; }
+        .form-control {
+            width: 100%; padding: 14px; background: #020617; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px; color: #fff; font-size: 18px; font-weight: 700; text-align: center;
+            font-family: 'Urbanist', sans-serif;
+        }
+        .form-control:focus { outline: none; border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
+
+        .btn-pix {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff; border: none; padding: 16px; width: 100%; border-radius: 12px;
+            font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+            transition: 0.2s;
+        }
+        .btn-pix:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+        .qr-section { margin-top: 20px; display: none; }
+        .qr-code-img {
+            background: #fff; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 15px;
+            max-width: 220px;
+        }
+        .qr-code-img img { width: 100%; height: auto; display: block; }
+
+        .copia-cola {
+            background: #020617; border: 1px solid rgba(255,255,255,0.15); padding: 12px;
+            border-radius: 8px; font-size: 11px; color: #38bdf8; word-break: break-all;
+            max-height: 80px; overflow-y: auto; margin-bottom: 12px; text-align: left;
+        }
+
+        .btn-copiar {
+            background: #3b82f6; color: #fff; border: none; padding: 10px 20px; border-radius: 8px;
+            font-weight: 700; cursor: pointer; font-size: 13px; width: 100%;
+        }
+        .btn-copiar:hover { background: #2563eb; }
+
+        .btn-voltar {
+            display: inline-block; margin-top: 20px; color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 700;
+        }
+        .btn-voltar:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="deposito-container">
+        <h1>Depósito Instantâneo Pix</h1>
+        <p class="sub">Adicione fundos para jogar no Cassino Royale</p>
+
+        <div id="formDeposito">
+            <div class="form-group">
+                <label>Valor do Depósito (R$)</label>
+                <input type="number" id="valorDeposito" class="form-control" value="100.00" min="10" step="10">
+            </div>
+            <button class="btn-pix" onclick="gerarPix()">Gerar QR Code Pix ⚡</button>
+        </div>
+
+        <div id="areaQrCode" class="qr-section">
+            <div class="qr-code-img" id="containerQrImg">
+                </div>
+            <p style="font-size: 12px; color: #facc15; margin-bottom: 8px; font-weight: 700;">Pix Copia e Cola:</p>
+            <div class="copia-cola" id="textoCopiaCola"></div>
+            <button class="btn-copiar" onclick="copiarCodigo()">Copiar Código Pix</button>
+            <p style="font-size: 11px; color: #94a3b8; margin-top: 15px;">Após o pagamento, o administrador irá aprovar o seu saldo no painel.</p>
+        </div>
+
+        <div>
+            <a href="index.html" class="btn-voltar"><i class="fa-solid fa-arrow-left"></i> Voltar ao Jogo</a>
+        </div>
+    </div>
+
+    <script>
+        const usuarioId = localStorage.getItem('usuarioId');
+        if (!usuarioId) {
+            window.location.href = 'login.html';
+        }
+
+        function gerarPix() {
+            const valor = document.getElementById('valorDeposito').value;
+            const btn = document.querySelector('.btn-pix');
+            btn.innerText = "Gerando Pix...";
+            btn.disabled = true;
+
+            fetch('/api/depositar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuarioId, valor })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso) {
+                    document.getElementById('formDeposito').style.display = 'none';
+                    document.getElementById('areaQrCode').style.display = 'block';
+                    
+                    document.getElementById('containerQrImg').innerHTML = `<img src="data:image/png;base64,${data.qrCodeBase64}" alt="QR Code Pix">`;
+                    document.getElementById('textoCopiaCola').innerText = data.qrCodeCopyPaste;
+                } else {
+                    alert(data.mensagem || "Erro ao gerar Pix.");
+                    btn.innerText = "Gerar QR Code Pix ⚡";
+                    btn.disabled = false;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Erro de conexão com o servidor.");
+                btn.innerText = "Gerar QR Code Pix ⚡";
+                btn.disabled = false;
+            });
+        }
+
+        function copiarCodigo() {
+            const codigo = document.getElementById('textoCopiaCola').innerText;
+            navigator.clipboard.writeText(codigo).then(() => {
+                alert("Código Pix copiado com sucesso!");
+            });
+        }
+    </script>
+</body>
+</html>
