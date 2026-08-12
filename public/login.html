@@ -6,175 +6,212 @@
     <title>Entrar - Cassino Royale</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Biblioteca de Confetes -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #020617;
+            background-color: #030712;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.2) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(234, 179, 8, 0.18) 0%, transparent 40%);
+                radial-gradient(circle at 50% 10%, rgba(217, 119, 6, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 10% 90%, rgba(30, 58, 138, 0.4) 0%, transparent 60%),
+                radial-gradient(circle at 90% 90%, rgba(126, 34, 206, 0.3) 0%, transparent 60%);
+            font-family: 'Urbanist', sans-serif;
+            color: #fff;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            font-family: 'Urbanist', sans-serif;
-            color: #fff;
             padding: 20px;
         }
 
         .auth-container {
             width: 100%;
-            max-width: 440px;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
+            max-width: 450px;
+            background: linear-gradient(145deg, #1e1b4b 0%, #0f172a 50%, #020617 100%);
+            border: 5px solid;
+            border-image: linear-gradient(to bottom, #fde047, #ca8a04, #713f12) 1;
             border-radius: 24px;
-            padding: 35px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(250, 204, 21, 0.2);
-            border: 2px solid rgba(250, 204, 21, 0.4);
+            padding: 30px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(234, 179, 8, 0.3);
             position: relative;
-            overflow: hidden;
         }
 
-        /* Banner Promocional Profissional */
-        .promo-banner {
-            background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #f59e0b 100%);
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
-            border: 1px solid #fef08a;
-            position: relative;
-            animation: pulseGlow 2s infinite alternate;
-        }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
-            100% { box-shadow: 0 0 25px rgba(250, 204, 21, 0.8); }
-        }
-
-        .promo-banner .happy-face {
-            font-size: 32px;
-            display: inline-block;
-            margin-bottom: 4px;
-            animation: bounceFace 1s infinite alternate;
-        }
-        @keyframes bounceFace {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-5px) scale(1.1); }
-        }
-
-        .promo-banner h3 {
+        .auth-header { text-align: center; margin-bottom: 25px; }
+        .auth-header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 20px;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
-        .promo-banner p {
-            font-size: 13px;
-            color: #fffbeb;
-            font-weight: 700;
-            margin-top: 3px;
-        }
-
-        .logo-title {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .logo-title h1 {
-            font-family: 'Playfair Display', serif;
-            background: linear-gradient(to right, #facc15, #f59e0b, #fef08a);
+            font-size: 28px;
+            background: linear-gradient(to right, #fef08a, #facc15, #ca8a04);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 28px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            margin-top: 8px;
         }
-        .logo-title p { color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+        .auth-header p { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+
+        .banner-bonus {
+            background: linear-gradient(135deg, rgba(250, 204, 21, 0.15), rgba(202, 138, 4, 0.25));
+            border: 2px dashed #facc15;
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.2);
+        }
+        .banner-bonus h3 { font-size: 14px; color: #facc15; font-weight: 800; text-transform: uppercase; }
+        .banner-bonus span { font-size: 12px; color: #fde047; font-weight: 600; }
 
         .tabs {
             display: flex;
             background: #020617;
-            border-radius: 30px;
+            border: 2px solid #334155;
+            border-radius: 12px;
             padding: 4px;
-            margin-bottom: 22px;
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
         }
-        .tab-btn {
-            flex: 1; padding: 10px; border-radius: 25px; border: none;
-            background: transparent; color: #64748b; font-weight: 700; font-size: 12px;
-            cursor: pointer; transition: 0.3s;
+        .tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .tab-btn.active {
-            background: #facc15; color: #000; box-shadow: 0 0 15px rgba(250, 204, 21, 0.5);
+        .tab.active {
+            background: #facc15;
+            color: #000;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
         }
 
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; }
+        .form-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
         .form-control {
-            width: 100%; padding: 12px 15px; background: #020617; border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 10px; color: #fff; font-size: 14px; font-family: 'Urbanist', sans-serif;
+            width: 100%;
+            padding: 12px 15px;
+            background: #020617;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
             transition: 0.2s;
         }
-        .form-control:focus { outline: none; border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.2); }
+        .form-control:focus { border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
 
         .btn-submit {
-            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
-            color: #000; border: none; padding: 14px; width: 100%; border-radius: 10px;
-            font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
-            cursor: pointer; margin-top: 10px; box-shadow: 0 5px 20px rgba(234, 179, 8, 0.4);
+            width: 100%;
+            background: linear-gradient(135deg, #facc15 0%, #eab308 50%, #ca8a04 100%);
+            color: #000;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(234, 179, 8, 0.4);
             transition: 0.2s;
+            margin-top: 10px;
         }
-        .btn-submit:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-submit:hover { filter: brightness(1.15); transform: translateY(-2px); }
 
-        .form-container { display: none; }
-        .form-container.active { display: block; }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
 
-        .msg-feedback {
-            margin-top: 15px; text-align: center; font-size: 13px; font-weight: 700; min-height: 20px;
+        /* Modal de Sucesso Customizado */
+        #modalSucessoRegistro {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 6, 23, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-conteudo {
+            background: linear-gradient(145deg, #1e1b4b, #0f172a);
+            border: 4px solid #4ade80;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 0 50px rgba(74, 222, 128, 0.5);
+            animation: modalEntrada 0.3s ease-out;
+        }
+        @keyframes modalEntrada {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <div class="auth-container">
-        <div class="promo-banner">
-            <div class="happy-face">😊🎉</div>
-            <h3>Primeiro Cadastro Ganha</h3>
-            <p>R$ 100,00 DE BÔNUS NA HORA!</p>
-        </div>
+    <!-- Som de Festa / Moedas para o Cadastro -->
+    <audio id="som-festa" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
 
-        <div class="logo-title">
+    <!-- Modal de Parabéns Bem Visível -->
+    <div id="modalSucessoRegistro">
+        <div class="modal-conteudo">
+            <div style="font-size: 55px; margin-bottom: 10px;">🎉🥳</div>
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 24px; color: #facc15; margin-bottom: 10px; text-transform: uppercase;">Parabéns!</h2>
+            <p style="font-size: 16px; color: #fff; font-weight: 700; margin-bottom: 15px;">Você ganhou <span style="color: #4ade80; font-size: 22px;">R$ 100,00</span> de bônus na sua conta!</p>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 20px;">Redirecionando para o cassino...</p>
+            <button onclick="irParaCassino()" style="width: 100%; background: #4ade80; color: #000; border: none; padding: 12px; border-radius: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer;">Começar a Jogar 🚀</button>
+        </div>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="banner-bonus">
+                <h3><i class="fa-solid fa-gift"></i> Primeiro Cadastro Ganha</h3>
+                <span>R$ 100,00 de Bônus na Hora!</span>
+            </div>
             <h1>Cassino Royale</h1>
             <p>Portal Oficial de Jogos</p>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" id="tabLoginBtn" onclick="trocarAba('login')">Entrar</button>
-            <button class="tab-btn" id="tabCadastroBtn" onclick="trocarAba('cadastro')">Criar Conta</button>
+            <button class="tab active" id="tabEntrar" onclick="alternarAba('entrar')">Entrar</button>
+            <button class="tab" id="tabCriar" onclick="alternarAba('criar')">Criar Conta</button>
         </div>
 
-        <div id="loginForm" class="form-container active">
+        <!-- Formulário de Login -->
+        <div id="secaoEntrar" class="form-section active">
             <div class="form-group">
                 <label>Número de Telefone</label>
                 <input type="text" id="loginTelefone" class="form-control" placeholder="(00) 00000-0000">
             </div>
             <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="loginSenha" class="form-control" placeholder="Sua senha">
+                <label>Sua Senha</label>
+                <input type="password" id="loginSenha" class="form-control" placeholder="••••••••">
             </div>
-            <button class="btn-submit" onclick="fazerLogin()">Acessar Cassino</button>
+            <button class="btn-submit" onclick="fazerLogin()">Acessar Conta ⚡</button>
         </div>
 
-        <div id="cadastroForm" class="form-container">
+        <!-- Formulário de Cadastro -->
+        <div id="secaoCriar" class="form-section">
             <div class="form-group">
                 <label>Nome Completo</label>
-                <input type="text" id="cadNome" class="form-control" placeholder="Seu nome">
+                <input type="text" id="cadNome" class="form-control" placeholder="Seu nome completo">
             </div>
             <div class="form-group">
                 <label>Número de Telefone</label>
@@ -182,51 +219,87 @@
             </div>
             <div class="form-group">
                 <label>Criar Senha</label>
-                <input type="password" id="cadSenha" class="form-control" placeholder="Crie uma senha forte">
+                <input type="password" id="cadSenha" class="form-control" placeholder="Sua senha secreta">
             </div>
-            <button class="btn-submit" onclick="fazerCadastro()">Cadastrar e Ganhar R$ 100</button>
+            <button class="btn-submit" onclick="fazerCadastro()">Cadastrar e Ganhar R$ 100 🎁</button>
         </div>
-
-        <div id="feedbackMsg" class="msg-feedback"></div>
     </div>
 
     <script>
-        // Dispara confetes de festa logo ao abrir a tela de login
-        window.onload = () => {
-            dispararEfeitosFesta();
-        };
+        const somFesta = document.getElementById('som-festa');
+        let proximaPaginaUrl = 'index.html';
 
-        function dispararEfeitosFesta() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+        function alternarAba(tipo) {
+            if (tipo === 'entrar') {
+                document.getElementById('tabEntrar').classList.add('active');
+                document.getElementById('tabCriar').classList.remove('active');
+                document.getElementById('secaoEntrar').classList.add('active');
+                document.getElementById('secaoCriar').classList.remove('active');
+            } else {
+                document.getElementById('tabCriar').classList.add('active');
+                document.getElementById('tabEntrar').classList.remove('active');
+                document.getElementById('secaoCriar').classList.add('active');
+                document.getElementById('secaoEntrar').classList.remove('active');
+            }
         }
 
-        function trocarAba(aba) {
-            if(aba === 'login') {
-                document.getElementById('loginForm').classList.add('active');
-                document.getElementById('cadastroForm').classList.remove('active');
-                document.getElementById('tabLoginBtn').classList.add('active');
-                document.getElementById('tabCadastroBtn').classList.remove('active');
-            } else {
-                document.getElementById('cadastroForm').classList.add('active');
-                document.getElementById('loginForm').classList.remove('active');
-                document.getElementById('tabCadastroBtn').classList.add('active');
-                document.getElementById('tabLoginBtn').classList.remove('active');
+        function fazerCadastro() {
+            const nome = document.getElementById('cadNome').value;
+            const telefone = document.getElementById('cadTelefone').value;
+            const senha = document.getElementById('cadSenha').value;
+
+            if (!nome || !telefone || !senha) {
+                alert("Por favor, preencha todos os campos para se cadastrar!");
+                return;
             }
-            document.getElementById('feedbackMsg').innerText = '';
+
+            fetch('/api/registrar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, telefone, senha })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso) {
+                    // Salva os dados do usuário logado no navegador
+                    localStorage.setItem('usuarioId', data.usuario.id);
+                    localStorage.setItem('usuarioNome', data.usuario.nome);
+
+                    // Exibe o modal de parabéns bem visível
+                    document.getElementById('modalSucessoRegistro').style.display = 'flex';
+
+                    // Dispara fogos de artifício/confetes na tela inteira
+                    confetti({
+                        particleCount: 200,
+                        spread: 120,
+                        origin: { y: 0.5 }
+                    });
+
+                    // Toca o som de festa/vitória
+                    somFesta.currentTime = 0;
+                    somFesta.play().catch(e => console.log("Áudio bloqueado pelo navegador:", e));
+
+                    // Redireciona automaticamente após 4 segundos se o usuário não clicar no botão
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 4000);
+                } else {
+                    alert(data.mensagem || "Erro ao criar conta.");
+                }
+            })
+            .catch(() => alert("Erro de conexão com o servidor."));
+        }
+
+        function irParaCassino() {
+            window.location.href = 'index.html';
         }
 
         function fazerLogin() {
             const telefone = document.getElementById('loginTelefone').value;
             const senha = document.getElementById('loginSenha').value;
-            const msg = document.getElementById('feedbackMsg');
 
-            if(!telefone || !senha) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = "Preencha todos os campos!";
+            if (!telefone || !senha) {
+                alert("Preencha o telefone e a senha!");
                 return;
             }
 
@@ -237,56 +310,15 @@
             })
             .then(res => res.json())
             .then(data => {
-                if(data.sucesso) {
-                    localStorage.setItem('usuarioId', data.usuarioId);
+                if (data.sucesso) {
+                    localStorage.setItem('usuarioId', data.usuario.id);
+                    localStorage.setItem('usuarioNome', data.usuario.nome);
                     window.location.href = 'index.html';
                 } else {
-                    msg.style.color = '#f43f5e';
-                    msg.innerText = data.mensagem;
+                    alert(data.mensagem || "Telefone ou senha incorretos.");
                 }
             })
-            .catch(() => {
-                msg.style.color = '#f43f5e';
-                msg.innerText = "Erro de conexão com o servidor.";
-            });
-        }
-
-        function fazerCadastro() {
-            const nome = document.getElementById('cadNome').value;
-            const telefone = document.getElementById('cadTelefone').value;
-            const senha = document.getElementById('cadSenha').value;
-            const msg = document.getElementById('feedbackMsg');
-
-            if(!nome || !telefone || !senha) {
-                msg.style.color = '#f43f5e';
-                msg.innerText = "Preencha todos os campos para garantir seu bônus!";
-                return;
-            }
-
-            fetch('/api/cadastrar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, telefone, senha })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.sucesso) {
-                    dispararEfeitosFesta();
-                    msg.style.color = '#4ade80';
-                    msg.innerText = "🎉 " + data.mensagem;
-                    setTimeout(() => {
-                        localStorage.setItem('usuarioId', data.usuario.id);
-                        window.location.href = 'index.html';
-                    }, 1500);
-                } else {
-                    msg.style.color = '#f43f5e';
-                    msg.innerText = data.mensagem;
-                }
-            })
-            .catch(() => {
-                msg.style.color = '#f43f5e';
-                msg.innerText = "Erro ao processar cadastro.";
-            });
+            .catch(() => alert("Erro de conexão ao fazer login."));
         }
     </script>
 </body>
