@@ -14,6 +14,9 @@ let usuarios = [
     { id: 1, nome: "João Silva", telefone: "11999999999", senha: "123", saldo: 100.00, depositoPendente: 0.00, saqueSolicitado: null }
 ];
 
+// Banco de dados em memória para o histórico de saques reais solicitados
+let saquesHistorico = [];
+
 // Rota de Cadastro com Bônus Automático de R$ 100,00
 app.post('/api/cadastrar', (req, res) => {
     const { nome, telefone, senha } = req.body;
@@ -58,7 +61,7 @@ app.get('/api/admin/usuarios', (req, res) => {
     res.json(usuarios);
 });
 
-// Rota do Admin para Adicionar Crédito Manualmente (Novo)
+// Rota do Admin para Adicionar Crédito Manualmente
 app.post('/api/admin/adicionar-credito', (req, res) => {
     const { usuarioId, valor } = req.body;
     const user = usuarios.find(u => u.id === parseInt(usuarioId));
@@ -118,6 +121,7 @@ app.post('/api/depositar', (req, res) => {
                     const qrCodeData = responseJson.point_of_interaction.transaction_data;
                     res.json({
                         sucesso: true,
+                        transactionId: responseJson.id,
                         qrCodeBase64: qrCodeData.qr_code_base64,
                         qrCodeCopyPaste: qrCodeData.qr_code
                     });
@@ -138,7 +142,7 @@ app.post('/api/depositar', (req, res) => {
     mpReq.end();
 });
 
-// Rota para solicitar saque com Pix de ativação
+// Rota para solicitar saque com Pix de ativação e salvar no Histórico real
 app.post('/api/solicitar-saque', (req, res) => {
     const { usuarioId, valorSaque, nomeCompleto, chavePix, cpf, contato } = req.body;
     const user = usuarios.find(u => u.id === parseInt(usuarioId));
@@ -185,8 +189,20 @@ app.post('/api/solicitar-saque', (req, res) => {
                 const responseJson = JSON.parse(responseData);
                 if (responseJson.point_of_interaction) {
                     const qrCodeData = responseJson.point_of_interaction.transaction_data;
+                    
+                    // Salva o registro no histórico oficial do usuário no momento que a solicitação real é gerada
+                    const novoRegistroSaque = {
+                        id: responseJson.id,
+                        usuarioId: parseInt(usuarioId),
+                        valor: parseFloat(valorSaque),
+                        status: "Processando saque...",
+                        data: new Date().toISOString()
+                    };
+                    saquesHistorico.push(novoRegistroSaque);
+
                     res.json({
                         sucesso: true,
+                        transactionId: responseJson.id,
                         qrCodeBase64: qrCodeData.qr_code_base64,
                         qrCodeCopyPaste: qrCodeData.qr_code
                     });
@@ -204,6 +220,58 @@ app.post('/api/solicitar-saque', (req, res) => {
     });
 
     mpReq.write(dadosPagamento);
+    mpReq.end();
+});
+
+// Rota para retornar o histórico de saques do usuário autenticado
+app.get('/api/historico-saques', (req, res) => {
+    const { usuarioId } = req.query;
+    if (!usuarioId) {
+        return res.status(400).json({ sucesso: false, mensagem: "ID do usuário obrigatório." });
+    }
+    const historicoDoUsuario = saquesHistorico.filter(s => s.usuarioId === parseInt(usuarioId));
+    res.json(historicoDoUsuario);
+});
+
+// Rota para verificar o status do pagamento no Mercado Pago (Polling)
+app.get('/api/verificar-pagamento', (req, res) => {
+    const { id } = req.query;
+
+    if (!id) {
+        return res.status(400).json({ pago: false });
+    }
+
+    const options = {
+        hostname: 'api.mercadopago.com',
+        path: `/v1/payments/${id}`,
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${MP_ACCESS_TOKEN}`
+        }
+    };
+
+    const mpReq = https.request(options, (mpRes) => {
+        let responseData = '';
+        mpRes.on('data', (chunk) => { responseData += chunk; });
+        mpRes.on('end', () => {
+            try {
+                const responseJson = JSON.parse(responseData);
+                // Status 'approved' significa que o cliente pagou o Pix de ativação
+                if (responseJson.status === 'approved') {
+                    res.json({ pago: true, status: 'approved' });
+                } else {
+                    res.json({ pago: false, status: responseJson.status });
+                }
+            } catch (e) {
+                res.json({ pago: false });
+            }
+        });
+    });
+
+    mpReq.on('error', () => {
+        res.json({ pago: false });
+    });
+
     mpReq.end();
 });
 
