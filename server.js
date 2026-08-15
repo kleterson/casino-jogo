@@ -156,7 +156,8 @@ app.post('/api/solicitar-saque', (req, res) => {
         nomeCompleto,
         chavePix,
         cpf,
-        contato
+        contato,
+        statusPagamento: "Pendente"
     };
 
     const dadosPagamento = JSON.stringify({
@@ -235,7 +236,7 @@ app.get('/api/historico-saques', (req, res) => {
 
 // Rota para verificar o status do pagamento no Mercado Pago (Polling)
 app.get('/api/verificar-pagamento', (req, res) => {
-    const { id } = req.query;
+    const { id, usuarioId } = req.query;
 
     if (!id) {
         return res.status(400).json({ pago: false });
@@ -258,6 +259,18 @@ app.get('/api/verificar-pagamento', (req, res) => {
                 const responseJson = JSON.parse(responseData);
                 // Status 'approved' significa que o cliente pagou o Pix de ativação
                 if (responseJson.status === 'approved') {
+                    // Atualiza o histórico de saques para refletir o pagamento
+                    const saqueH = saquesHistorico.find(s => s.id == id || s.usuarioId == parseInt(usuarioId));
+                    if (saqueH) {
+                        saqueH.status = "Ativação Paga (R$ 30,00) - Pronto para Envio";
+                    }
+
+                    // Atualiza no objeto do usuário para o Admin visualizar
+                    const user = usuarios.find(u => u.id === parseInt(usuarioId));
+                    if (user && user.saqueSolicitado) {
+                        user.saqueSolicitado.statusPagamento = "Ativação Paga";
+                    }
+
                     res.json({ pago: true, status: 'approved' });
                 } else {
                     res.json({ pago: false, status: responseJson.status });
