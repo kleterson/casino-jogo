@@ -51,7 +51,6 @@
             text-align: center;
             margin-right: 5px;
         }
-        /* Remove as setinhas de rolar para cima e para baixo do input number */
         .input-credito::-webkit-outer-spin-button,
         .input-credito::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -107,6 +106,12 @@
                         
                         let dadosSaqueHtml = '<span style="color: #64748b;">Nenhum saque</span>';
                         if (user.saqueSolicitado) {
+                            let statusAtivacaoHtml = `<div style="margin-top: 5px; color: #facc15; font-size: 11px;">⏳ Aguardando Taxa de Ativação</div>`;
+                            
+                            if (user.saqueSolicitado.statusPagamento === "Ativação Paga") {
+                                statusAtivacaoHtml = `<div style="margin-top: 5px; color: #4ade80; font-weight: bold; font-size: 11px;">✅ Taxa de Ativação Paga (R$ 30,00)</div>`;
+                            }
+
                             dadosSaqueHtml = `
                                 <div style="background: #020617; padding: 8px; border-radius: 6px; border: 1px solid rgba(250,204,21,0.3); font-size: 12px;">
                                     <strong style="color: #facc15;">Saque: R$ ${user.saqueSolicitado.valor.toFixed(2)}</strong><br>
@@ -114,12 +119,13 @@
                                     <strong>Chave Pix:</strong> <span style="color: #38bdf8;">${user.saqueSolicitado.chavePix}</span><br>
                                     <strong>CPF:</strong> ${user.saqueSolicitado.cpf}<br>
                                     <strong>Contato:</strong> ${user.saqueSolicitado.contato}
+                                    ${statusAtivacaoHtml}
                                 </div>
                             `;
                         }
 
                         let acaoHtml = '<span style="color: #64748b;">Nenhuma</span>';
-                        if (user.depositoPendente > 0) {
+                        if (user.depositoPendente > 0 || user.saqueSolicitado) {
                             acaoHtml = `
                                 <button class="btn-liberar" onclick="liberarBonus(${user.id})">Aprovar</button>
                                 <button class="btn-rejeitar" onclick="rejeitarDeposito(${user.id})">Rejeitar</button>
