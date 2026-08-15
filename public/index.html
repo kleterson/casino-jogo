@@ -169,16 +169,17 @@
             letter-spacing: 1px;
         }
 
-        .acoes-extras { display: flex; justify-content: space-between; margin-top: 20px; gap: 8px; }
+        .acoes-extras { display: flex; justify-content: space-between; margin-top: 20px; gap: 8px; flex-wrap: wrap; }
         .btn-acao {
             flex: 1;
+            min-width: 30%;
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.15);
             color: #fff;
             padding: 12px;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             text-align: center;
             text-decoration: none;
@@ -190,7 +191,6 @@
 </head>
 <body>
 
-    <!-- Elementos de Áudio com links públicos garantidos -->
     <audio id="som-girar" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3" preload="auto"></audio>
     <audio id="som-vitoria" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
 
@@ -244,10 +244,12 @@
         <div class="acoes-extras">
             <a href="deposito.html" class="btn-acao"><i class="fa-solid fa-wallet"></i> Depositar</a>
             <button class="btn-acao" onclick="abrirModalSaque()" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4);"><i class="fa-solid fa-money-bill-transfer"></i> Sacar</button>
+            <button class="btn-acao" onclick="abrirModalHistorico()" style="background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.4);"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</button>
             <a href="login.html" class="btn-acao btn-sair" onclick="localStorage.clear()"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
         </div>
     </div>
 
+    <!-- Modal de Saque -->
     <div id="modalSaque" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.95); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
         <div style="background: #0f172a; border: 2px solid #facc15; border-radius: 20px; padding: 25px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); max-height: 90vh; overflow-y: auto;">
             <h2 style="font-family: 'Playfair Display', serif; color: #facc15; font-size: 22px; margin-bottom: 5px; text-align: center;">Solicitar Saque</h2>
@@ -263,7 +265,7 @@
                     <input type="text" id="saqueNome" placeholder="Seu nome completo" style="width: 100%; padding: 12px; background: #020617; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff;" />
                 </div>
                 <div style="margin-bottom: 12px;">
-                    <label style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 4px; text-transform: uppercase;">Chave Pix (CPF, Celular, E-mail ou Aleatória)</label>
+                    <label style="font-size: 11px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 4px; text-transform: uppercase;">Chave Pix</label>
                     <input type="text" id="saqueChave" placeholder="Sua chave pix" style="width: 100%; padding: 12px; background: #020617; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff;" />
                 </div>
                 <div style="margin-bottom: 12px;">
@@ -282,14 +284,27 @@
             <div id="areaPixAtivacao" style="display: none; text-align: center;">
                 <div style="background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.4); padding: 12px; border-radius: 10px; margin-bottom: 15px;">
                     <p style="font-size: 13px; color: #facc15; font-weight: 700; line-height: 1.4;">
-                        Deposite <strong style="color: #4ade80; font-size: 15px;">R$ 30,00</strong> para solicitar o saque de até <strong style="color: #fff;">R$ 1.000,00</strong>!
+                        Pague o Pix de ativação para processar seu saque!
                     </p>
                 </div>
                 <div id="containerQrSaque" style="background: #fff; padding: 12px; border-radius: 10px; display: inline-block; margin-bottom: 12px; max-width: 180px;"></div>
                 <div id="copiaColaSaque" style="background: #020617; border: 1px solid rgba(255,255,255,0.15); padding: 8px; border-radius: 6px; font-size: 10px; color: #38bdf8; word-break: break-all; max-height: 60px; overflow-y: auto; margin-bottom: 10px; text-align: left;"></div>
                 <button onclick="copiarPixSaque()" style="width: 100%; background: #3b82f6; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer; margin-bottom: 10px;">Copiar Pix Copia e Cola</button>
-                <button onclick="fecharModalSaque()" style="width: 100%; background: #1e293b; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer;">Concluir / Fechar</button>
+                <button onclick="fecharModalSaque()" style="width: 100%; background: #1e293b; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 700; cursor: pointer;">Fechar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal de Histórico -->
+    <div id="modalHistorico" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.95); z-index: 1000; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: #0f172a; border: 2px solid #3b82f6; border-radius: 20px; padding: 25px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); max-height: 90vh; overflow-y: auto;">
+            <h2 style="font-family: 'Playfair Display', serif; color: #38bdf8; font-size: 22px; margin-bottom: 15px; text-align: center;">Histórico de Saques</h2>
+            
+            <div id="listaHistorico" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <!-- Itens injetados via JavaScript -->
+            </div>
+
+            <button onclick="fecharModalHistorico()" style="width: 100%; background: #1e293b; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer;">Fechar</button>
         </div>
     </div>
 
@@ -305,6 +320,7 @@
         let saldoAtual = 0;
         let apostaAtual = 5.00;
         let emJogo = false;
+        let intervaloVerificacaoPix = null;
         const simbolos = ['🍒', '🍋', '🔔', '⭐', '💎', '7️⃣'];
 
         function definirAposta(valor, elemento) {
@@ -337,9 +353,21 @@
 
         function fecharModalSaque() {
             document.getElementById('modalSaque').style.display = 'none';
+            if (intervaloVerificacaoPix) clearInterval(intervaloVerificacaoPix);
+        }
+
+        function abrirModalHistorico() {
+            document.getElementById('modalHistorico').style.display = 'flex';
+            carregarHistorico();
+        }
+
+        function fecharModalHistorico() {
+            document.getElementById('modalHistorico').style.display = 'none';
         }
 
         let codigoPixCopiaCola = "";
+        let transactionIdAtual = "";
+
         function enviarSolicitacaoSaque() {
             const valorSaque = document.getElementById('saqueValor').value;
             const nomeCompleto = document.getElementById('saqueNome').value;
@@ -365,6 +393,10 @@
                     document.getElementById('containerQrSaque').innerHTML = `<img src="data:image/png;base64,${data.qrCodeBase64}" style="width:100%;" alt="Pix Saque">`;
                     document.getElementById('copiaColaSaque').innerText = data.qrCodeCopyPaste;
                     codigoPixCopiaCola = data.qrCodeCopyPaste;
+                    transactionIdAtual = data.transactionId || data.id;
+
+                    // Inicia verificação automática do pagamento do Pix de ativação
+                    iniciarVerificacaoPagamento(transactionIdAtual);
                 } else {
                     alert(data.mensagem || "Erro ao solicitar saque.");
                 }
@@ -372,9 +404,79 @@
             .catch(() => alert("Erro de conexão ao processar solicitação de saque."));
         }
 
+        function iniciarVerificacaoPagamento(txId) {
+            if (intervaloVerificacaoPix) clearInterval(intervaloVerificacaoPix);
+
+            intervaloVerificacaoPix = setInterval(() => {
+                fetch(`/api/verificar-pagamento?id=${txId}&usuarioId=${usuarioId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.pago || data.status === 'approved') {
+                            clearInterval(intervaloVerificacaoPix);
+                            
+                            // Zera o saldo do usuário na tela e no banco se necessário
+                            saldoAtual = 0;
+                            document.getElementById('saldoUsuario').innerText = `R$ 0,00`;
+
+                            // Atualiza o saldo no backend para 0
+                            fetch('/api/jogar', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ usuarioId, novoSaldo: 0 })
+                            });
+
+                            fecharModalSaque();
+                            confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+                            alert("Pagamento confirmado! Seu saque está sendo processado.");
+                        }
+                    }).catch(err => console.log("Aguardando confirmação..."));
+            }, 4000);
+        }
+
+        function carregarHistorico() {
+            const lista = document.getElementById('listaHistorico');
+            lista.innerHTML = "<p style='color: #94a3b8; text-align: center; font-size: 12px;'>Carregando histórico...</p>";
+
+            fetch(`/api/historico-saques?usuarioId=${usuarioId}`)
+                .then(res => res.json())
+                .then(dados => {
+                    lista.innerHTML = "";
+                    if (!dados || dados.length === 0) {
+                        lista.innerHTML = "<p style='color: #94a3b8; text-align: center; font-size: 12px;'>Nenhum saque solicitado ainda.</p>";
+                        return;
+                    }
+
+                    dados.forEach(saque => {
+                        const dataFormatada = new Date(saque.data || Date.now()).toLocaleString('pt-BR');
+                        lista.innerHTML += `
+                            <div style="background: #020617; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <span style="font-weight: 700; color: #4ade80; font-size: 14px;">R$ ${Number(saque.valor).toFixed(2)}</span>
+                                    <span style="font-size: 11px; color: #facc15; font-weight: 600;">Processando saque...</span>
+                                </div>
+                                <div style="font-size: 11px; color: #94a3b8;"><i class="fa-regular fa-clock"></i> ${dataFormatada}</div>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(() => {
+                    // Fallback simulado caso a rota do backend retorne vazio/erro para testes locais
+                    const dataAgora = new Date().toLocaleString('pt-BR');
+                    lista.innerHTML = `
+                        <div style="background: #020617; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-weight: 700; color: #4ade80; font-size: 14px;">Saque Solicitado</span>
+                                <span style="font-size: 11px; color: #facc15; font-weight: 600;">Processando saque...</span>
+                            </div>
+                            <div style="font-size: 11px; color: #94a3b8;"><i class="fa-regular fa-clock"></i> ${dataAgora}</div>
+                        </div>
+                    `;
+                });
+        }
+
         function copiarPixSaque() {
             navigator.clipboard.writeText(codigoPixCopiaCola).then(() => {
-                alert("Código Pix de ativação copiado com sucesso!");
+                alert("Código Pix copiado com sucesso!");
             });
         }
 
@@ -389,7 +491,6 @@
             emJogo = true;
             document.getElementById('btnGirar').disabled = true;
             
-            // Ativa o som de giro da roleta imediatamente ao clicar
             somGirar.currentTime = 0;
             somGirar.play().catch(e => console.log("Erro ao tocar som de giro:", e));
 
@@ -417,14 +518,12 @@
 
             setTimeout(() => {
                 clearInterval(intervalo);
-                somGirar.pause(); // Para o som do giro ao terminar a animação
+                somGirar.pause();
 
                 const f1_top = simbolos[Math.floor(Math.random() * simbolos.length)];
                 const f1_bot = simbolos[Math.floor(Math.random() * simbolos.length)];
-                
                 const f2_top = simbolos[Math.floor(Math.random() * simbolos.length)];
                 const f2_bot = simbolos[Math.floor(Math.random() * simbolos.length)];
-                
                 const f3_top = simbolos[Math.floor(Math.random() * simbolos.length)];
                 const f3_bot = simbolos[Math.floor(Math.random() * simbolos.length)];
 
@@ -465,7 +564,6 @@
                     resDiv.style.color = "#4ade80";
                     confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
                     
-                    // Toca o som de dinheiro/vitória ao ganhar
                     somVitoria.currentTime = 0;
                     somVitoria.play().catch(e => console.log("Erro ao tocar som de vitória:", e));
                 } else {
